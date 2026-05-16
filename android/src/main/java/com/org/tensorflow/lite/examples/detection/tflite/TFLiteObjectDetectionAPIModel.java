@@ -133,7 +133,7 @@ public class TFLiteObjectDetectionAPIModel
 
     final TFLiteObjectDetectionAPIModel d = new TFLiteObjectDetectionAPIModel();
 
-    String actualFilename = labelFilename.split("file:///android_asset/")[1];
+    String actualFilename = labelFilename.contains("file:///android_asset/") ? labelFilename.split("file:///android_asset/")[1] : labelFilename;
     InputStream labelsInput = assetManager.open(actualFilename);
     BufferedReader br = new BufferedReader(new InputStreamReader(labelsInput));
     String line;
