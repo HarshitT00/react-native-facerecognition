@@ -1,12 +1,8 @@
 import { NativeModules, Platform } from 'react-native';
 
 const LINKING_ERROR =
-  `The package 'react-native-facerecognition' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
+  `The package 'react-native-facerecognition' doesn't seem to be linked. Make sure you rebuilt the native app package.\n`;
 
-// Grab our Java module
 const Facerecognition = NativeModules.Facerecognition
   ? NativeModules.Facerecognition
   : new Proxy(
@@ -19,11 +15,17 @@ const Facerecognition = NativeModules.Facerecognition
     );
 
 /**
- * Pass a local file path (e.g., from react-native-vision-camera or image-picker)
- * to the native Android face recognition model.
- * * @param imagePath The absolute local path to the image file (e.g., file:///storage/...)
- * @returns A promise that resolves with the recognition result string.
+ * Recognizes a face image path against the database registry
+ * @returns Promise resolving to the user's name string or "UNKNOWN"
  */
 export function recognizeFace(imagePath: string): Promise<string> {
   return Facerecognition.recognizeFace(imagePath);
+}
+
+/**
+ * Registers a new unique user profile with an explicit facial photo path
+ * @returns Promise resolving to a confirmation status message string
+ */
+export function registerFace(name: string, imagePath: string): Promise<string> {
+  return Facerecognition.registerFace(name, imagePath);
 }
