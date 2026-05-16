@@ -60,8 +60,15 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
+  
+  aaptOptions {
+    noCompress "tflite"
+  }  
 }
 
 dependencies {
   implementation "com.facebook.react:react-android"
+  implementation 'org.tensorflow:tensorflow-lite:2.9.0'
+  implementation 'org.tensorflow:tensorflow-lite-gpu:2.9.0'
+  implementation 'org.tensorflow:tensorflow-lite-support:0.4.1'
 }
