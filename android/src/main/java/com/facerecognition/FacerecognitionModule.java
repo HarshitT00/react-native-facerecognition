@@ -50,12 +50,16 @@ public class FacerecognitionModule extends ReactContextBaseJavaModule {
 
         try {
             String cleanPath = imagePath.replace("file://", "");
-            Bitmap bitmap = BitmapFactory.decodeFile(cleanPath);
+            Bitmap rawBitmap = BitmapFactory.decodeFile(cleanPath);
 
-            if (bitmap == null) {
+            if (rawBitmap == null) {
                 promise.reject("IMAGE_ERROR", "Could not read the image at: " + cleanPath);
                 return;
             }
+
+            // Resize to 112x112 as required by MobileFaceNet model
+            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 112, 112, true);
+            rawBitmap.recycle();
 
             // Run the TFLite inference to find nearest matching face embedding
             final List<SimilarityClassifier.Recognition> results = classifier.recognizeImage(bitmap, false);
@@ -89,7 +93,16 @@ public class FacerecognitionModule extends ReactContextBaseJavaModule {
 
         try {
             String cleanPath = imagePath.replace("file://", "");
-            Bitmap bitmap = BitmapFactory.decodeFile(cleanPath);
+            Bitmap rawBitmap = BitmapFactory.decodeFile(cleanPath);
+
+            if (rawBitmap == null) {
+                promise.reject("IMAGE_ERROR", "Could not read the image at: " + cleanPath);
+                return;
+            }
+
+            // Resize to 112x112 as required by the MobileFaceNet model
+            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 112, 112, true);
+            rawBitmap.recycle();
 
             if (bitmap == null) {
                 promise.reject("IMAGE_ERROR", "Could not read the image at: " + cleanPath);
@@ -110,7 +123,9 @@ public class FacerecognitionModule extends ReactContextBaseJavaModule {
             }
 
         } catch (Exception e) {
-            promise.reject("REGISTRATION_ERROR", e.getMessage());
+            e.printStackTrace();
+            String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getName() + ": " + e.toString();
+            promise.reject("REGISTRATION_ERROR", msg);
         }
     }
 }
